@@ -15,7 +15,8 @@ import { FC } from "react"
 
 export const ChangesSummary: FC = () => {
   const space = useSpace()
-  const { saveAndExit, isLoading } = useCompleteProfile()
+  const { saveAndExit } = useCompleteProfile()
+  const isLoading = CompleteMyProfileStore.useStoreState((state) => state.isLoading)
   const steps = CompleteMyProfileStore.useStoreState((state) => state.steps)
   const progressState = CompleteMyProfileStore.useStoreState((state) => state.progressState)
   const progressStateWithoutUndefined = CompleteMyProfileStore.useStoreState(

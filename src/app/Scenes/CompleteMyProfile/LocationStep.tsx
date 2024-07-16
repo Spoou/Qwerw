@@ -1,6 +1,6 @@
 import { Text, Screen, Spacer, Flex } from "@artsy/palette-mobile"
-import { EditableLocation } from "__generated__/useUpdateMyProfileMutation.graphql"
 import { LocationAutocomplete, buildLocationDisplay } from "app/Components/LocationAutocomplete"
+import { CompleteMyProfileStore } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
 import { Footer } from "app/Scenes/CompleteMyProfile/Footer"
 import { useCompleteProfile } from "app/Scenes/CompleteMyProfile/hooks/useCompleteProfile"
 import { LocationWithDetails } from "app/utils/googleMaps"
@@ -8,8 +8,12 @@ import { FC } from "react"
 import { KeyboardAvoidingView } from "react-native"
 
 export const LocationStep: FC = () => {
-  const { goNext, isCurrentRouteDirty, field, setField } =
-    useCompleteProfile<Partial<EditableLocation>>()
+  const { goNext } = useCompleteProfile()
+
+  const location = CompleteMyProfileStore.useStoreState((state) => state.progressState.location)
+  const setProgressState = CompleteMyProfileStore.useStoreActions(
+    (actions) => actions.setProgressState
+  )
 
   const handleOnChange = ({
     city,
@@ -19,18 +23,21 @@ export const LocationStep: FC = () => {
     stateCode,
     coordinates,
   }: LocationWithDetails) => {
-    setField({
-      city: city ?? "",
-      country: country ?? "",
-      postalCode: postalCode ?? "",
-      state: state ?? "",
-      stateCode: stateCode ?? "",
-      coordinates: coordinates?.map((c) => parseInt(c, 10)),
+    setProgressState({
+      type: "location",
+      value: {
+        city: city ?? "",
+        country: country ?? "",
+        postalCode: postalCode ?? "",
+        state: state ?? "",
+        stateCode: stateCode ?? "",
+        coordinates: coordinates?.map((c) => parseInt(c, 10)),
+      },
     })
   }
 
   const handleOnClear = () => {
-    setField(undefined)
+    setProgressState({ type: "location", value: undefined })
   }
 
   return (
@@ -55,14 +62,14 @@ export const LocationStep: FC = () => {
                 autoFocus
                 title="Primary location"
                 placeholder="Primary location"
-                displayLocation={buildLocationDisplay(field)}
+                displayLocation={buildLocationDisplay(location)}
                 onChange={handleOnChange}
                 enableClearButton
                 onClear={handleOnClear}
               />
             </Flex>
 
-            <Footer isFormDirty={isCurrentRouteDirty} onGoNext={goNext} />
+            <Footer isFormDirty={!!location} onGoNext={goNext} />
           </Flex>
         </KeyboardAvoidingView>
       </Screen.Body>

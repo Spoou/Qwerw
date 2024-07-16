@@ -1,5 +1,6 @@
 import { Text, Screen, Button, Spacer, Flex, useSpace, CheckIcon } from "@artsy/palette-mobile"
 import { IdentityVerificationStep_me$key } from "__generated__/IdentityVerificationStep_me.graphql"
+import { CompleteMyProfileStore } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
 import { Footer } from "app/Scenes/CompleteMyProfile/Footer"
 import { useCompleteMyProfileSteps } from "app/Scenes/CompleteMyProfile/hooks/useCompleteMyProfileSteps"
 import { useCompleteProfile } from "app/Scenes/CompleteMyProfile/hooks/useCompleteProfile"
@@ -10,14 +11,21 @@ import { graphql, useFragment } from "react-relay"
 
 export const IdentityVerificationStep: FC = () => {
   const space = useSpace()
-  const { goNext, isCurrentRouteDirty, field, setField } = useCompleteProfile()
+  const { goNext } = useCompleteProfile()
   const { me } = useCompleteMyProfileSteps()
   const data = useFragment<IdentityVerificationStep_me$key>(fragment, me)
   const { handleVerification } = useHandleIDVerification(data?.internalID ?? "")
 
+  const isIdentityVerified = CompleteMyProfileStore.useStoreState(
+    (state) => state.progressState.isIdentityVerified
+  )
+  const setProgressState = CompleteMyProfileStore.useStoreActions(
+    (actions) => actions.setProgressState
+  )
+
   const handleSendVerification = () => {
     handleVerification()
-    setField(true)
+    setProgressState({ type: "isIdentityVerified", value: true })
   }
 
   return (
@@ -34,7 +42,7 @@ export const IdentityVerificationStep: FC = () => {
               account.
             </Text>
 
-            {!field ? (
+            {!isIdentityVerified ? (
               <Button onPress={handleSendVerification}>Send verification Email</Button>
             ) : (
               <Button icon={<CheckIcon fill="white100" />} variant="fillSuccess">
@@ -55,7 +63,7 @@ export const IdentityVerificationStep: FC = () => {
             </Text>
           </Flex>
 
-          {!!field && (
+          {!!isIdentityVerified && (
             <Flex flex={1} justifyContent="flex-end">
               <Text color="white100" backgroundColor="green100" py={1} px={2}>
                 ID verification email sent to {data?.email}.
@@ -64,7 +72,7 @@ export const IdentityVerificationStep: FC = () => {
           )}
         </Flex>
 
-        <Footer isFormDirty={isCurrentRouteDirty} onGoNext={goNext} />
+        <Footer isFormDirty={!!isIdentityVerified} onGoNext={goNext} />
       </Screen.Body>
     </Screen>
   )

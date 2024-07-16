@@ -1,13 +1,16 @@
 import { Text, Screen, Spacer, Flex } from "@artsy/palette-mobile"
-import { ProgressState } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
+import { CompleteMyProfileStore } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
 import { Footer } from "app/Scenes/CompleteMyProfile/Footer"
 import { ImageSelector } from "app/Scenes/CompleteMyProfile/ImageSelector"
 import { useCompleteProfile } from "app/Scenes/CompleteMyProfile/hooks/useCompleteProfile"
 import { FC } from "react"
 
 export const AvatarStep: FC = () => {
-  const { goNext, isCurrentRouteDirty, setField, field } =
-    useCompleteProfile<ProgressState["iconUrl"]>()
+  const { goNext } = useCompleteProfile()
+  const iconUrl = CompleteMyProfileStore.useStoreState((state) => state.progressState.iconUrl)
+  const setProgressState = CompleteMyProfileStore.useStoreActions(
+    (actions) => actions.setProgressState
+  )
 
   const handleOnImageSelect = ({
     localPath,
@@ -16,7 +19,7 @@ export const AvatarStep: FC = () => {
     localPath: string
     geminiUrl: string
   }) => {
-    setField({ localPath, geminiUrl })
+    setProgressState({ type: "iconUrl", value: { localPath, geminiUrl } })
   }
 
   return (
@@ -34,10 +37,10 @@ export const AvatarStep: FC = () => {
 
             <Spacer y={2} />
 
-            <ImageSelector onImageSelect={handleOnImageSelect} src={field} />
+            <ImageSelector onImageSelect={handleOnImageSelect} src={iconUrl} />
           </Flex>
 
-          <Footer isFormDirty={isCurrentRouteDirty} onGoNext={goNext} />
+          <Footer isFormDirty={!!iconUrl} onGoNext={goNext} />
         </Flex>
       </Screen.Body>
     </Screen>

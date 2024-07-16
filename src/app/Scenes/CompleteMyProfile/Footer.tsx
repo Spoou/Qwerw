@@ -1,4 +1,5 @@
 import { Button, Flex, Touchable, Text } from "@artsy/palette-mobile"
+import { CompleteMyProfileStore } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
 import { useCompleteProfile } from "app/Scenes/CompleteMyProfile/hooks/useCompleteProfile"
 import { FC } from "react"
 import { Platform } from "react-native"
@@ -9,7 +10,8 @@ interface FooterProps {
 }
 
 export const Footer: FC<FooterProps> = ({ isFormDirty, onGoNext }) => {
-  const { goBack, isLoading } = useCompleteProfile()
+  const { goBack } = useCompleteProfile()
+  const isLoading = CompleteMyProfileStore.useStoreState((state) => state.isLoading)
 
   return (
     <Flex pt={2} pb={Platform.OS === "ios" ? 4 : 2} justifyContent="flex-end">

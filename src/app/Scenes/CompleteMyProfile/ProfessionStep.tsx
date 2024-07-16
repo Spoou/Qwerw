@@ -1,15 +1,23 @@
 import { Text, Screen, Spacer, Input, Flex } from "@artsy/palette-mobile"
+import { CompleteMyProfileStore } from "app/Scenes/CompleteMyProfile/CompleteMyProfileProvider"
 import { Footer } from "app/Scenes/CompleteMyProfile/Footer"
 import { useCompleteProfile } from "app/Scenes/CompleteMyProfile/hooks/useCompleteProfile"
 import { FC } from "react"
 import { KeyboardAvoidingView } from "react-native"
 
 export const ProfessionStep: FC = () => {
-  const { goNext, isCurrentRouteDirty, field, setField } = useCompleteProfile<string>()
+  const { goNext } = useCompleteProfile()
+
+  const profession = CompleteMyProfileStore.useStoreState((state) => state.progressState.profession)
+  const setProgressState = CompleteMyProfileStore.useStoreActions(
+    (actions) => actions.setProgressState
+  )
 
   const handleOnChange = (text: string) => {
-    setField(text)
+    setProgressState({ type: "profession", value: text })
   }
+
+  console.log("profession", !!profession)
 
   return (
     <Screen safeArea={false}>
@@ -33,12 +41,12 @@ export const ProfessionStep: FC = () => {
                 placeholder="Profession"
                 title="Profession"
                 autoFocus
-                value={field}
+                value={profession as string}
                 onChangeText={handleOnChange}
               />
             </Flex>
 
-            <Footer isFormDirty={isCurrentRouteDirty} onGoNext={goNext} />
+            <Footer isFormDirty={!!profession} onGoNext={goNext} />
           </Flex>
         </KeyboardAvoidingView>
       </Screen.Body>

@@ -7,7 +7,6 @@ describe("Footer", () => {
   const mockGoBack = jest.fn()
 
   ;(jest.spyOn(useCompleteProfile, "useCompleteProfile") as jest.SpyInstance<any>).mockReturnValue({
-    isLoading: false,
     goBack: mockGoBack,
   })
 
