@@ -128,7 +128,7 @@ export const ArtworkRailCard: React.FC<ArtworkRailCardProps> = ({
   })
 
   const displayLimitedTimeOfferSignal =
-    AREnablePartnerOfferSignals && collectorSignals?.partnerOffer?.isAvailable && !sale?.isAuction
+    AREnablePartnerOfferSignals && collectorSignals?.primaryLabel === "PARTNER_OFFER"
 
   const displayAuctionSignal = AREnableAuctionImprovementsSignals && sale?.isAuction
 

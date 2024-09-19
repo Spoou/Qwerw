@@ -269,10 +269,7 @@ export const Artwork: React.FC<ArtworkProps> = ({
     !!priceOfferMessage.priceWithDiscountMessage
 
   const displayLimitedTimeOfferSignal =
-    AREnablePartnerOfferSignals &&
-    collectorSignals?.partnerOffer?.isAvailable &&
-    !isAuction &&
-    !displayPriceOfferMessage
+    AREnablePartnerOfferSignals && collectorSignals?.primaryLabel === "PARTNER_OFFER"
 
   const displayAuctionSignal = AREnableAuctionImprovementsSignals && isAuction
 
@@ -594,6 +591,7 @@ export default createFragmentContainer(Artwork, {
       }
       realizedPrice
       collectorSignals {
+        primaryLabel
         partnerOffer {
           isAvailable
           endAt

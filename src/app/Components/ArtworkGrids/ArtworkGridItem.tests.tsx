@@ -499,7 +499,7 @@ describe("ArtworkGridItem", () => {
             ...artwork,
             sale: { ...artwork.sale, isAuction: false },
             realizedPrice: null,
-            collectorSignals,
+            collectorSignals: { ...collectorSignals, primaryLabel: "PARTNER_OFFER" },
           }),
         })
 
