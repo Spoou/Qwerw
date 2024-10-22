@@ -59,7 +59,7 @@ export const Task: React.FC<TaskProps> = ({
           Clear
         </Text>
       }
-      actionComponentWidth={80 * fontScale}
+      actionComponentWidth={70 * fontScale}
       actionOnPress={handleClearTask}
       actionOnSwipe={handleClearTask}
       actionBackground="red100"
