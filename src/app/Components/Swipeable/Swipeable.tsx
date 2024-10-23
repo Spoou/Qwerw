@@ -11,7 +11,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated"
 
-const FRICTION = 1.2
+const FRICTION = 1
 const SWIPE_TO_INTERACT_THRESHOLD = 80
 
 export interface SwipeableProps {
