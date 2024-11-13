@@ -1,4 +1,4 @@
-import { SearchModalScreen } from "app/Scenes/SearchModal/SeachModal"
+import { SearchModalScreen } from "app/Scenes/SearchModal/SearchModal"
 import { renderWithWrappers } from "app/utils/tests/renderWithWrappers"
 
 describe("SeachModal", () => {
