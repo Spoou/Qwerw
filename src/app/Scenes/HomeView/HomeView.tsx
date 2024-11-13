@@ -19,6 +19,7 @@ import { getRelayEnvironment } from "app/system/relay/defaultEnvironment"
 import { useBottomTabsScrollToTop } from "app/utils/bottomTabsHelper"
 import { useExperimentVariant } from "app/utils/experiments/hooks"
 import { extractNodes } from "app/utils/extractNodes"
+import { useFeatureFlag } from "app/utils/hooks/useFeatureFlag"
 import { ProvidePlaceholderContext } from "app/utils/placeholders"
 import { usePrefetch } from "app/utils/queryPrefetching"
 import { requestPushNotificationsPermission } from "app/utils/requestPushNotificationsPermission"
@@ -34,6 +35,7 @@ export const homeViewScreenQueryVariables = () => ({
 })
 
 export const HomeView: React.FC = () => {
+  const enableNewSearchModal = useFeatureFlag("AREnableNewSearchModal")
   const flashlistRef = useBottomTabsScrollToTop("home")
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -139,10 +141,20 @@ export const HomeView: React.FC = () => {
     })
   }
 
+  const stickyHeaderProps = enableNewSearchModal
+    ? {
+        stickyHeaderHiddenOnScroll: true,
+        stickyHeaderIndices: [0],
+      }
+    : {}
+
   return (
     <Screen safeArea={true}>
       <Screen.Body fullwidth>
         <FlatList
+          automaticallyAdjustKeyboardInsets
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           ref={flashlistRef as RefObject<FlatList>}
           data={sections}
@@ -161,6 +173,7 @@ export const HomeView: React.FC = () => {
           }
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
           onEndReachedThreshold={2}
+          {...stickyHeaderProps}
         />
         {!!data?.me && <EmailConfirmationBannerFragmentContainer me={data.me} />}
       </Screen.Body>
